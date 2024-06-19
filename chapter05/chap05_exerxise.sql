@@ -1,0 +1,416 @@
+-- 5장: 더 정학하고 다양하게 결과를 출력하는 WHERE절과 연산자
+--5-1  P94
+SELECT *
+  FROM EMP;
+  
+--5-2 부서번호가 30인 데이터(행)만 출력하기
+SELECT *
+  FROM EMP
+ WHERE DEPTNO = 30;  -- '=' 비교연산자 같다면 
+ 
+ --1분 복습
+ --사원번호가 7782인 사원 정보만 나오도록 쿼리 작성 하시오
+SELECT *
+  FROM EMP
+ WHERE EMPNO = 7782;
+ 
+--5-3 AND 연산자로 여러개 조건식 사용하기
+SELECT *
+  FROM EMP
+ WHERE DEPTNO = 30
+   AND JOB = 'SALESMAN';   --논리 연산자 AND, OR  AND= 둘다 TRUE여야 O
+
+--사원번호가 7499 이고 부서번호가 30인 사원 정보만 출력
+SELECT *
+  FROM EMP
+ WHERE EMPNO = 7499
+   AND DEPTNO = 30;
+   
+--5-4 OR연산자로 여러개의 출력조건 사용하기
+SELECT *
+  FROM EMP
+ WHERE DEPTNO = 30
+    OR JOB = 'CLERK';
+    
+SELECT *
+  FROM EMP
+ WHERE JOB = 'SALESMAN'
+    OR JOB = 'CLERK';   -- 해당하면 모두 가져옴(TRUE)
+
+--1분 복습 : 부서 번호가 20 이거나 직업이 SALESMAN인 사원 정보 출력
+SELECT *
+  FROM EMP
+ WHERE DEPTNO = 20
+    OR JOB = 'SALESMAN';
+    
+--5-5산술 연산자 :급여열에 12를 곱한 값이 36000인 행을 출력
+SELECT *
+  FROM EMP
+ WHERE SAL * 12 = 36000;
+ 
+--5-6 비교연산자 :급여가 3000이상인 직원 정보 조회 출력
+SELECT *
+  FROM EMP
+ WHERE SAL >= 3000;
+ 
+--1분 복습 
+--급여가 2500 이상이고 직업이 ANALYST인 사원 정보만 출력
+SELECT *
+  FROM EMP
+ WHERE SAL >= 2500
+   AND JOB = 'ANALYST';
+   
+--5-7 문자도 대소 비교 가능 (순서)
+SELECT *
+  FROM EMP
+ WHERE ENAME >= 'F';
+ 
+ --5-8 
+SELECT *
+  FROM EMP 
+ WHERE ENAME <= 'FORZ';
+ 
+--등가비교 연산자  같지않다( '<>', '!=', '^=' )
+--같다 '='
+--5-9
+SELECT *
+  FROM EMP
+ WHERE SAL != 3000;
+
+--5-10
+SELECT *
+  FROM EMP
+ WHERE SAL <> 3000;
+
+--5-11
+SELECT *
+  FROM EMP
+ WHERE SAL ^= 3000;
+ 
+--5-12 논리 부정 연산자
+SELECT *
+  FROM EMP
+ WHERE NOT SAL = 3000;
+
+--IN 연산자  중요!!!
+--OR 연산자를 사용 여러개 조건을 만족하는 데이터 출력
+SELECT *
+  FROM EMP 
+ WHERE JOB = 'MANAGER'
+    OR JOB = 'SALESMAN'
+    OR JOB = 'CLERK';
+    
+--5-14
+SELECT * 
+  FROM EMP
+ WHERE JOB IN('MANAGER', 'SALESMAN', 'CLERK');--60개 내외까진 가능
+
+--5-15 등가비교 연산자와 AND 연산자 사용
+SELECT * 
+  FROM EMP
+ WHERE JOB != 'MANAGER'
+   AND JOB <> 'SALESMAN'
+   AND JOB ^= 'CLERK';
+ 
+--5-16  모두가 아닌경우
+SELECT * 
+  FROM EMP
+ WHERE JOB NOT IN('MANAGER', 'SALESMAN', 'CLERK');
+
+--1분 복습 
+--부서 번호가 10, 20 번인 사원 정보만 출력하는 쿼리 작성
+SELECT *
+  FROM EMP
+ WHERE DEPTNO IN (10, 20); 
+
+--5-17 대소 비교연산자
+SELECT *
+  FROM EMP
+ WHERE SAL >= 2000 AND SAL <= 3000;
+ 
+--5-18 BETWEEN A AND B범위 많이 사용 
+SELECT *
+  FROM EMP
+ WHERE SAL BETWEEN 2000 AND 3000;  -- >=, <= 이상 이하
+
+--5-19
+SELECT *
+  FROM EMP
+ WHERE SAL NOT BETWEEN 2000 AND 3000;  --초과 미만
+ 
+--LIKE연산자와 와일드 카드 : 매우 중요
+--5-20  --이름이 S로 시작하는 직원 출력
+SELECT *
+  FROM EMP
+ WHERE ENAME LIKE 'S%';  --와일드 카드 : 특수문자 OR 문자열 대체 OR 패턴
+ 
+--LIKE 연산자와 함께 사용 할수있는 와일드 카드 '_' DHK '%'
+/*
+_ : 어떤 값이든 한개의 문자 데이터를 의미
+% : 길이와 상관없이 모든 문자 데이터 의미 
+*/
+
+--사원 이름의 두번째 글자가 L인 사원만 출력
+--5-21
+SELECT *
+  FROM EMP
+ WHERE ENAME LIKE '_L%';
+ 
+--사원 이름이 AM이 포함되어 있는 사원 데이터만 출력
+--5-22
+SELECT *
+  FROM EMP
+ WHERE ENAME LIKE '%AM%';
+ 
+--5-23
+SELECT *
+  FROM EMP
+ WHERE ENAME NOT LIKE '%AM%';
+ 
+-- _ 나 % 문자가 데이터로 포함 되어 있는경우가 간혹 있음
+
+
+
+
+INSERT INTO EMP VALUES
+(7999,'A_ADAM','CLERK',    7902,to_date('17-12-1980','dd-mm-yyyy'),800,NULL,20);
+
+COMMIT;
+
+SELECT * FROM EMP WHERE ENAME LIKE 'A_A%';
+
+SELECT * FROM EMP WHERE ENAME LIKE 'A@_A%' ESCAPE'@';  
+--7999	A_ADAM	CLERK	7902	80/12/17	800		20
+--_가 와일드 카드가 아니라 문자로 인식하게 만듬
+
+DELETE FROM EMP WHERE ENAME LIKE 'A@_A%' ESCAPE'@'; 
+COMMIT;
+
+
+
+SELECT * FROM EMP;
+
+---------5장 문제------------
+SELECT *
+  FROM EMPLOYEES
+  WHERE FIRST_NAME ='David';--출력되는 데이터는 대소 문자 구분함
+  
+SELECT *
+  FROM JOBS
+ WHERE MIN_SALEARY = 4000;
+ 
+SELECT *
+  FROM JOBS
+ WHERE MIN_SALARY > 8000;
+ 
+SELECT *
+  FROM JOBS
+ WHERE MAX_SALARY <= 10000;
+ 
+SELECT *
+  FROM JOBS
+ WHERE MIN_SALARY >= 4000
+   AND MAX_SALARY <=10000;
+
+SELECT *
+  FROM EMPLOYEES
+ WHERE JOB_ID = 'IT_PROG'
+   AND SALARY > 5000;
+   
+   
+--5-24 P114
+SELECT ENAME, SAL, SAL*12+COMM AS ANNSAL, COMM
+  FROM EMP;
+  
+--5-25
+SELECT *
+  FROM EMP
+ WHERE COMM = NULL;  --실제 데이타가 NULL이 입력 되있는경우
+ 
+--5-26
+SELECT *
+  FROM EMP
+ WHERE COMM IS NULL;  -- 실제로 값이 없는 것 찾는 경우
+ 
+SELECT *
+  FROM EMP
+ WHERE COMM IS NOT  NULL;  --IS NULL은 NOT 을 IS 뒤에 씀
+
+--5-27   직속 상관이 있는 사원 데이터만 출력  
+SELECT *
+  FROM EMP
+ WHERE MGR IS NOT NULL;--NULL이 아니다 = 존재한다
+  
+--5-28 AND 연산자와 IS NOT
+SELECT * 
+  FROM EMP
+ WHERE SAL > NULL  --FULSE뜸 아무것도 안나옴
+   AND COMM IS NULL;
+
+--5-28 OR 연산자와 IS NULL 연산자  합집합
+SELECT * 
+  FROM EMP
+ WHERE SAL > NULL  --FULSE
+    OR COMM IS NULL;
+    
+--집합연산자 : UNION, UNION ALL, MINUS, INTERSECT     
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO IN ( 10, 20 );    
+-- UNION 중복부분 1번출력, UNION ALL 중복부분 2번출력, MINUS 겹치는 부분 제외하고 전부 INTERSECT 겹치는 부분만
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 10
+UNION  --위 아래를 이어줌 = DEPTNO IN ( 10, 20 );  
+SELECT EMPNO, ENAME, SAL, DEPTNO -- 위랑 갯수가 똑같아야함
+  FROM EMP
+ WHERE DEPTNO = 20
+ ;
+ 
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO IN ( 10, 20 );    
+-- UNION 중복부분 1번출력, UNION ALL 중복부분 2번출력, MINUS 겹치는 부분 제외하고 전부 INTERSECT 겹치는 부분만
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 10
+UNION  ALL --중복되더라도 모두 출력
+SELECT EMPNO, ENAME, SAL, DEPTNO -- 위랑 갯수가 똑같아야함
+  FROM EMP
+ WHERE DEPTNO = 20
+ ;
+ 
+SELECT DISTINCT DEPTNO FROM EMP;
+--5-36
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+MINUS
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 10;
+ 
+--5-37 INTERSECT 교집합
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+INTERSECT
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 10;
+
+--연산자 우선순위
+--높은순 : 산술연산자 > 대소비교연산자 > 그외비교(IS NULL, LIKE, IN) > BETWEEN > 논리
+
+SELECT *
+  FROM EMP
+ WHERE ENAME LIKE '%S';
+ 
+SELECT EMPNO, ENAME, JOB, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 30
+   AND JOB = 'SALESMAN';
+
+--집합연산자 미사용 쿼리   
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO IN ( 20, 30)
+   AND SAL > 2000;
+
+--집합연산자 사용 쿼리     
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 20
+   AND SAL > 2000
+UNION
+SELECT EMPNO, ENAME, SAL, DEPTNO
+  FROM EMP
+ WHERE DEPTNO = 30
+   AND SAL > 2000;
+
+SELECT *
+  FROM EMP
+ WHERE SAL < 2000
+   OR SAL > 3000;
+   
+SELECT ENAME, EMPNO, SAL, DEPTNO
+  FROM EMP
+ WHERE ENAME LIKE '%E%'
+   AND DEPTNO = 30
+   AND SAL NOT BETWEEN 1000 AND 2000;
+   
+SELECT *
+  FROM EMP
+ WHERE COMM IS NULL --수당 없음
+   AND MGR IS NOT NULL  --상급자 존재
+   AND JOB IN ('MANAGER', 'CLERK')  
+   AND ENAME NOT LIKE '_L%';
+   
+
+--문제
+SELECT *
+  FROM JOBS
+ ORDER BY JOB_TITLE;
+  
+ 
+SELECT *
+  FROM COUNTRIES
+ ORDER BY COUNTRY_NAME DESC;
+ 
+SELECT *
+  FROM EMPLOYEES
+ WHERE SALARY >= 10000
+   AND SALARY <= 12000;
+   
+SELECT *
+  FROM EMPLOYEES
+ WHERE SALARY BETWEEN 10000 AND 12000;
+   
+SELECT *
+  FROM EMPLOYEES
+ WHERE JOB_ID IN ('IT_PROG', 'ST_MAN');
+ 
+SELECT *
+  FROM EMPLOYEES
+ WHERE MANAGER_ID IS NULL;
+ 
+SELECT *
+  FROM DEPARTMENTS
+ WHERE MANAGER_ID IS NOT NULL;
+ 
+SELECT *
+  FROM EMPLOYEES
+ WHERE JOB_ID LIKE 'AD%';
+ 
+SELECT *
+  FROM EMPLOYEES
+ WHERE FIRST_NAME LIKE '%ni%';
+ 
+SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID BETWEEN 2000 AND 3000;
+ 
+SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID >= 2000
+UNION ALL
+SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID <= 3000;
+ 
+ SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID >= 2000
+MINUS
+SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID <= 3000;
+ 
+ SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID >= 2000
+INTERSECT
+SELECT LOCATION_ID, STREET_ADDRESS, CITY
+  FROM LOCATIONS
+ WHERE LOCATION_ID <= 3000;
+
+
+--6-
